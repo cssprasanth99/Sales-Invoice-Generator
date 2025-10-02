@@ -34,55 +34,64 @@ const parseInvoiceFromText = async (req, res) => {
 
     Extract the data and provide only the JSON obejct.
     `;
-    const result = await ai.models.generateContent({
+    const response = await ai.models.generateContent({
       model: "gemini-1.5-flash-latest",
       contents: prompt,
     });
-    let responseText = result.text;
+    let responseText = response.text;
     console.log("responseText", responseText);
     if (typeof responseText !== "string") {
       if (typeof response.text === "function") {
-        responseText = await response.text();
+        responseText = response.text();
       } else {
         throw new Error("Invalid response format");
       }
     }
-    // Extract JSON even if wrapped in markdown code fences or extra text
-    let jsonCandidate = responseText;
-    // Prefer fenced code block: ```json ... ``` or ``` ... ```
-    const fenced = responseText.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
-    if (fenced && fenced[1]) {
-      jsonCandidate = fenced[1];
-    }
-    // Clean remnants of alternative fences like '''json ... '''
-    jsonCandidate = jsonCandidate
-      .replace(/^\s*json\s*/i, "")
-      .replace(/'''json/gi, "")
-      .replace(/'''/g, "")
+
+    const cleanedJSON = responseText
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
       .trim();
-    // If still contains surrounding text, slice between first { and last }
-    const firstBrace = jsonCandidate.indexOf("{");
-    const lastBrace = jsonCandidate.lastIndexOf("}");
-    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-      jsonCandidate = jsonCandidate.slice(firstBrace, lastBrace + 1);
-    }
-    console.log("cleanedJSON", jsonCandidate);
-    let invoiceData;
-    try {
-      invoiceData = JSON.parse(jsonCandidate);
-    } catch (parseErr) {
-      console.error("Failed to JSON.parse cleaned content:", parseErr);
-      console.error("Cleaned content was:\n", jsonCandidate);
-      return res.status(500).json({
-        message: "Failed to parse invoice",
-        details: parseErr.message,
-      });
-    }
-    // Success
 
-    const cleanedJSON = jsonCandidate; // keep for backward compatibility in logs if needed
+    const parsedData = JSON.parse(cleanedJSON);
+    res.status(200).json(parsedData);
 
-    res.status(200).json(invoiceData);
+    // // Extract JSON even if wrapped in markdown code fences or extra text
+    // let jsonCandidate = responseText;
+    // // Prefer fenced code block: ```json ... ``` or ``` ... ```
+    // const fenced = responseText.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+    // if (fenced && fenced[1]) {
+    //   jsonCandidate = fenced[1];
+    // }
+    // // Clean remnants of alternative fences like '''json ... '''
+    // jsonCandidate = jsonCandidate
+    //   .replace(/^\s*json\s*/i, "")
+    //   .replace(/'''json/gi, "")
+    //   .replace(/'''/g, "")
+    //   .trim();
+    // // If still contains surrounding text, slice between first { and last }
+    // const firstBrace = jsonCandidate.indexOf("{");
+    // const lastBrace = jsonCandidate.lastIndexOf("}");
+    // if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+    //   jsonCandidate = jsonCandidate.slice(firstBrace, lastBrace + 1);
+    // }
+    // console.log("cleanedJSON", jsonCandidate);
+    // let invoiceData;
+    // try {
+    //   invoiceData = JSON.parse(jsonCandidate);
+    // } catch (parseErr) {
+    //   console.error("Failed to JSON.parse cleaned content:", parseErr);
+    //   console.error("Cleaned content was:\n", jsonCandidate);
+    //   return res.status(500).json({
+    //     message: "Failed to parse invoice",
+    //     details: parseErr.message,
+    //   });
+    // }
+    // // Success
+
+    // const cleanedJSON = jsonCandidate; // keep for backward compatibility in logs if needed
+
+    // res.status(200).json(invoiceData);
   } catch (error) {
     console.error("Error parsing invoice from text:", error);
     res.status(500).json({ message: "Failed to parse invoice" });

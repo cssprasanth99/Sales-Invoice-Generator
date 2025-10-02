@@ -36,7 +36,7 @@ const ProfileDropdown = ({
         <ChevronDown className="w-4 h-4 text-gray-400" />
       </button>
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-56 rounded-xl shadow-lg border border-gray-100 py-2 z-50">
+        <div className="absolute right-0 mt-2 w-56 rounded-xl shadow-lg bg-white border border-gray-100 py-2 z-50">
           <div className="px-4 py-3 border-b border-gray-100">
             <p className="text-sm font-medium text-gray-900">{companyName}</p>
             <p className="text-xs text-gray-500">{email}</p>

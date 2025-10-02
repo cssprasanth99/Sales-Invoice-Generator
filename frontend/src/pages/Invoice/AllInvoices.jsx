@@ -301,9 +301,7 @@ const AllInvoices = () => {
                           size="icon"
                           variant="ghost"
                           title="Edit Invoice"
-                          onClick={() =>
-                            navigate(`/invoices/edit/${invoice._id}`)
-                          } // Assumes an edit route
+                          onClick={() => navigate(`/invoice/${invoice._id}`)}
                         >
                           <Edit className="h-4 w-4 text-slate-500" />
                         </Button>

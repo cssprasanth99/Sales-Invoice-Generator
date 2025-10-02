@@ -163,7 +163,7 @@ const Dashboard = () => {
                     <tr
                       key={invoice._id}
                       className="hover:bg-slate-50 cursor-pointer"
-                      onClick={() => navigate(`/invoices/${invoice._id}`)}
+                      onClick={() => navigate(`/invoice/${invoice._id}`)}
                     >
                       <td className="px-4 py-3">
                         <div className="text-sm font-medium text-slate-800">

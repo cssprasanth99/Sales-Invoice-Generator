@@ -26,6 +26,7 @@ connectionDB();
 app.use(express.json());
 
 //Routes
+app.get("/", (req, res) => res.send("API is Working"));
 app.use("/api/auth", authRoutes);
 app.use("/api/invoices", invoiceRoutes);
 app.use("/api/ai", aiRoutes);

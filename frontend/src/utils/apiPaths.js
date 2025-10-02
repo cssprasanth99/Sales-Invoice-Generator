@@ -8,8 +8,8 @@ export const API_PATHS = {
     UPDATE_PROFILE: "/api/auth/me", // update profile details
   },
   INVOICE: {
-    CREATE: "/api/invoices/",
-    GET_ALL_INVOICES: "/api/invoices/",
+    CREATE: "/api/invoices",
+    GET_ALL_INVOICES: "/api/invoices",
     GET_INVOICE_BY_ID: (id) => `/api/invoices/${id}`,
     UPDATE_INVOICE: (id) => `/api/invoices/${id}`,
     DELETE_INVOICE: (id) => `/api/invoices/${id}`,

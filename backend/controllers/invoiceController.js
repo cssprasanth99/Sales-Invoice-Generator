@@ -88,6 +88,11 @@ exports.getInvoices = async (req, res) => {
 exports.getInvoiceById = async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id);
+    if (!invoice) {
+      return res.status(404).json({ message: "Invoice not found" });
+    }
+
+    
 
     if (invoice && invoice.userId.toString() === req.user.id) {
       res.json(invoice);

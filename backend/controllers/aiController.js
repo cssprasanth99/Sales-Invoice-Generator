@@ -181,6 +181,8 @@ const getDashboardSummary = async (req, res) => {
       contents: prompt,
     });
 
+    console.log("response", response);
+
     const responseText = response.text;
 
     const cleanedJSON = responseText

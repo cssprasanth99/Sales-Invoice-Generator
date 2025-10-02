@@ -1,4 +1,13 @@
-import { BarChart2, FileText, Mail, Sparkles } from "lucide-react";
+import {
+  BarChart2,
+  FileText,
+  Mail,
+  Sparkles,
+  LayoutDashboard,
+  Users,
+  Settings,
+  Plus,
+} from "lucide-react";
 
 export const FEATURES = [
   {
@@ -85,5 +94,29 @@ export const FAQS = [
     question: "What is AI Invoice Creation?",
     answer:
       "AI Invoice Creation is a feature that allows you to create invoices for your clients with ease. You can simply paste any text, email, or receipt and let our AI generate an invoice for you.",
+  },
+];
+
+//Navigation item configuration
+export const NAVIGATION_MENU = [
+  {
+    id: "dashboard",
+    label: "Dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    id: "invoices",
+    label: "Invoices",
+    icon: FileText,
+  },
+  {
+    id: "invoice/new",
+    label: "Create Invoice",
+    icon: Plus,
+  },
+  {
+    id: "Profile",
+    label: "Profile",
+    icon: Users,
   },
 ];

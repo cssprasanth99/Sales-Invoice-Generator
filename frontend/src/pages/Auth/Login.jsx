@@ -149,7 +149,6 @@ const Login = () => {
               <p className="mt-1 text-sm text-red-500">{fieldError.email}</p>
             )}
           </div>
-
           {/* Password */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -182,7 +181,6 @@ const Login = () => {
               <p className="mt-1 text-sm text-red-500">{fieldError.password}</p>
             )}
           </div>
-
           {/* Error/Success */}
           {error && (
             <div className="p-3 rounded-lg bg-red-50 text-red-600 text-sm">
@@ -194,7 +192,6 @@ const Login = () => {
               {success}
             </div>
           )}
-
           {/* Sign In Button */}
           <button
             type="submit"

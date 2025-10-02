@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
     window.location.href = "/";
   };
-  const upateUser = (updateUserData) => {
+  const updateUser = (updateUserData) => {
     const newUserData = { ...user, ...updateUserData };
     localStorage.setItem("user", JSON.stringify(newUserData));
     setUser(newUserData);
@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
     checkAuthStatus,
     login,
     logout,
-    upateUser,
+    updateUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

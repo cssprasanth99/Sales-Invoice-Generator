@@ -4,7 +4,7 @@ import { API_PATHS } from "../../utils/apiPaths";
 import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-hot-toast";
 import moment from "moment";
-import { useAuth } from "../../context/authContext";
+import { useAuth } from "../../context/AuthContext";
 import InputField from "../../components/ui/InputField";
 import TextareaField from "../../components/ui/TextareaField";
 import Button from "../../components/ui/Button";

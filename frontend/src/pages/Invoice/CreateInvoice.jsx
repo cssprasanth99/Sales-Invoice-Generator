@@ -210,36 +210,35 @@ const CreateInvoice = ({ existingInvoice, onSave }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <form
           onSubmit={handleSubmit}
-          className="bg-white shadow-2xl rounded-2xl overflow-hidden"
+          className="bg-white shadow-lg rounded-xl overflow-hidden"
         >
           {/* Header */}
-          <div className="px-8 py-6">
-            <div className="flex justify-between items-center">
+          <div className="p-6 border-b border-slate-200">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="flex items-center space-x-3">
-                <FileText className="h-8 w-8 text-blue-600" />
-                <h2 className="text-3xl font-bold text-blue-600">
+                <FileText className="h-7 w-7 text-blue-600" />
+                <h2 className="text-2xl sm:text-3xl font-bold text-slate-800">
                   {existingInvoice ? "Edit Invoice" : "Create New Invoice"}
                 </h2>
               </div>
               <Button
                 type="submit"
                 isLoading={loading || isGeneratingNumber}
-                className="bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+                className="w-full sm:w-auto"
               >
                 {existingInvoice ? "Update Invoice" : "Save Invoice"}
               </Button>
             </div>
           </div>
 
-          <div className="p-8 space-y-8">
+          <div className="p-6 sm:p-8 space-y-8">
             {/* Invoice Details */}
-            <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
-                <span className="w-1 h-6 bg-blue-600 mr-3 rounded"></span>
+            <div className="bg-slate-50 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-slate-800 mb-4">
                 Invoice Details
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -271,11 +270,10 @@ const CreateInvoice = ({ existingInvoice, onSave }) => {
             </div>
 
             {/* Bill From / Bill To */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Bill From */}
-              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-6 border border-emerald-100">
-                <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
-                  <span className="w-1 h-6 bg-emerald-600 mr-3 rounded"></span>
+              <div className="bg-slate-50 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-slate-800 mb-4">
                   Bill From
                 </h3>
                 <div className="space-y-4">
@@ -312,9 +310,8 @@ const CreateInvoice = ({ existingInvoice, onSave }) => {
               </div>
 
               {/* Bill To */}
-              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-100">
-                <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
-                  <span className="w-1 h-6 bg-purple-600 mr-3 rounded"></span>
+              <div className="bg-slate-50 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-slate-800 mb-4">
                   Bill To
                 </h3>
                 <div className="space-y-4">
@@ -351,32 +348,32 @@ const CreateInvoice = ({ existingInvoice, onSave }) => {
               </div>
             </div>
 
-            {/* Items */}
-            <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
-                <span className="w-1 h-6 bg-blue-600 mr-3 rounded"></span>
+            {/* Items Section */}
+            <div className="bg-slate-50 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-slate-800 mb-4">
                 Invoice Items
               </h3>
-              <div className="overflow-x-auto rounded-lg border border-slate-200">
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto rounded-lg border border-slate-200">
                 <table className="w-full">
-                  <thead className="bg-gradient-to-r from-slate-700 to-slate-800 text-white">
+                  <thead className="bg-slate-100">
                     <tr>
-                      <th className="px-4 py-3 text-left text-sm font-semibold">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-slate-600">
                         Item Name
                       </th>
-                      <th className="px-4 py-3 text-center text-sm font-semibold w-24">
-                        Quantity
+                      <th className="px-4 py-3 text-center text-sm font-semibold text-slate-600 w-24">
+                        Qty
                       </th>
-                      <th className="px-4 py-3 text-center text-sm font-semibold w-32">
-                        Unit Price (₹)
+                      <th className="px-4 py-3 text-center text-sm font-semibold text-slate-600 w-32">
+                        Price (₹)
                       </th>
-                      <th className="px-4 py-3 text-center text-sm font-semibold w-24">
+                      <th className="px-4 py-3 text-center text-sm font-semibold text-slate-600 w-24">
                         Tax (%)
                       </th>
-                      <th className="px-4 py-3 text-right text-sm font-semibold w-32">
+                      <th className="px-4 py-3 text-right text-sm font-semibold text-slate-600 w-32">
                         Total (₹)
                       </th>
-                      <th className="px-4 py-3 w-16"></th>
+                      <th className="p-3 w-16"></th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-slate-200">
@@ -386,11 +383,8 @@ const CreateInvoice = ({ existingInvoice, onSave }) => {
                         (Number(item.unitPrice) || 0) *
                         (1 + (Number(item.taxPercentage) || 0) / 100);
                       return (
-                        <tr
-                          key={index}
-                          className="hover:bg-blue-50 transition-colors"
-                        >
-                          <td className="px-4 py-3">
+                        <tr key={index}>
+                          <td className="p-2">
                             <input
                               type="text"
                               name="name"
@@ -398,12 +392,12 @@ const CreateInvoice = ({ existingInvoice, onSave }) => {
                               onChange={(e) =>
                                 handleInputChange(e, null, index)
                               }
-                              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                              placeholder="Enter item name"
+                              className="w-full border-slate-300 rounded-md p-2 text-sm focus:ring-blue-500 focus:border-blue-500"
+                              placeholder="Item name"
                               required
                             />
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="p-2">
                             <input
                               type="number"
                               name="quantity"
@@ -412,11 +406,11 @@ const CreateInvoice = ({ existingInvoice, onSave }) => {
                               onChange={(e) =>
                                 handleInputChange(e, null, index)
                               }
-                              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-center focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                              className="w-full border-slate-300 rounded-md p-2 text-sm text-center focus:ring-blue-500 focus:border-blue-500"
                               required
                             />
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="p-2">
                             <input
                               type="number"
                               name="unitPrice"
@@ -426,33 +420,32 @@ const CreateInvoice = ({ existingInvoice, onSave }) => {
                               onChange={(e) =>
                                 handleInputChange(e, null, index)
                               }
-                              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-center focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                              className="w-full border-slate-300 rounded-md p-2 text-sm text-center focus:ring-blue-500 focus:border-blue-500"
                               required
                             />
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="p-2">
                             <input
                               type="number"
                               name="taxPercentage"
                               min="0"
                               max="100"
-                              step="0.01"
                               value={item.taxPercentage}
                               onChange={(e) =>
                                 handleInputChange(e, null, index)
                               }
-                              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-center focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                              className="w-full border-slate-300 rounded-md p-2 text-sm text-center focus:ring-blue-500 focus:border-blue-500"
                               required
                             />
                           </td>
                           <td className="px-4 py-3 text-right text-sm font-semibold text-slate-700">
                             ₹{itemTotal.toFixed(2)}
                           </td>
-                          <td className="px-4 py-3 text-center">
+                          <td className="p-2 text-center">
                             <button
                               type="button"
                               onClick={() => handleRemoveItem(index)}
-                              className="text-red-600 hover:text-red-800 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                              className="text-red-500 hover:text-red-700 p-2 rounded-md"
                               disabled={formData.items.length === 1}
                             >
                               <Trash2 className="h-4 w-4" />
@@ -464,25 +457,90 @@ const CreateInvoice = ({ existingInvoice, onSave }) => {
                   </tbody>
                 </table>
               </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-4">
+                {formData.items.map((item, index) => {
+                  const itemTotal =
+                    (Number(item.quantity) || 0) *
+                    (Number(item.unitPrice) || 0) *
+                    (1 + (Number(item.taxPercentage) || 0) / 100);
+                  return (
+                    <div
+                      key={index}
+                      className="bg-white p-4 rounded-lg border border-slate-200"
+                    >
+                      <InputField
+                        label="Item Name"
+                        name="name"
+                        value={item.name}
+                        onChange={(e) => handleInputChange(e, null, index)}
+                        required
+                        placeholder="Enter item name"
+                      />
+                      <div className="grid grid-cols-2 gap-4 mt-4">
+                        <InputField
+                          label="Quantity"
+                          name="quantity"
+                          type="number"
+                          value={item.quantity}
+                          onChange={(e) => handleInputChange(e, null, index)}
+                          required
+                        />
+                        <InputField
+                          label="Unit Price (₹)"
+                          name="unitPrice"
+                          type="number"
+                          value={item.unitPrice}
+                          onChange={(e) => handleInputChange(e, null, index)}
+                          required
+                        />
+                      </div>
+                      <div className="mt-4">
+                        <InputField
+                          label="Tax (%)"
+                          name="taxPercentage"
+                          type="number"
+                          value={item.taxPercentage}
+                          onChange={(e) => handleInputChange(e, null, index)}
+                          required
+                        />
+                      </div>
+                      <div className="flex justify-between items-center mt-4 pt-2 border-t">
+                        <span className="text-sm font-semibold text-slate-700">
+                          Item Total: ₹{itemTotal.toFixed(2)}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveItem(index)}
+                          className="text-red-500 hover:text-red-700 p-2 rounded-md"
+                          disabled={formData.items.length === 1}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
               <div className="mt-4">
                 <Button
                   type="button"
                   variant="secondary"
                   onClick={handleAddItem}
-                  className="flex items-center space-x-2"
+                  icon={Plus}
                 >
-                  <Plus className="h-4 w-4" />
-                  <span>Add Item</span>
+                  Add Another Item
                 </Button>
               </div>
             </div>
 
             {/* Notes, Terms & Summary */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Notes & Terms */}
-              <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-100">
-                <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
-                  <span className="w-1 h-6 bg-amber-600 mr-3 rounded"></span>
+              <div className="bg-slate-50 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-slate-800 mb-4">
                   Notes & Payment Terms
                 </h3>
                 <div className="space-y-4">
@@ -491,7 +549,7 @@ const CreateInvoice = ({ existingInvoice, onSave }) => {
                     name="notes"
                     value={formData.notes}
                     onChange={handleInputChange}
-                    placeholder="Add any additional notes or instructions..."
+                    placeholder="E.g., thank you for your business"
                   />
                   <SelectField
                     label="Payment Terms"
@@ -504,33 +562,28 @@ const CreateInvoice = ({ existingInvoice, onSave }) => {
               </div>
 
               {/* Invoice Summary */}
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
-                <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
-                  <span className="w-1 h-6 bg-blue-600 mr-3 rounded"></span>
+              <div className="bg-slate-50 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-slate-800 mb-4">
                   Invoice Summary
                 </h3>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center py-3 border-b border-slate-200">
-                    <span className="text-slate-600 font-medium">
-                      Subtotal:
-                    </span>
-                    <span className="text-lg font-semibold text-slate-800">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center py-2">
+                    <span className="text-slate-600">Subtotal:</span>
+                    <span className="font-semibold text-slate-800">
                       ₹{subtotal.toFixed(2)}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center py-3 border-b border-slate-200">
-                    <span className="text-slate-600 font-medium">
-                      Tax Total:
-                    </span>
-                    <span className="text-lg font-semibold text-slate-800">
+                  <div className="flex justify-between items-center py-2">
+                    <span className="text-slate-600">Tax Total:</span>
+                    <span className="font-semibold text-slate-800">
                       ₹{taxTotal.toFixed(2)}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center py-4 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg px-4">
-                    <span className="text-white font-bold text-lg">
+                  <div className="flex justify-between items-center py-3 mt-2 bg-slate-200 rounded-lg px-4">
+                    <span className="font-bold text-slate-800">
                       Grand Total:
                     </span>
-                    <span className="text-2xl font-bold text-white">
+                    <span className="text-xl font-bold text-blue-600">
                       ₹{total.toFixed(2)}
                     </span>
                   </div>
@@ -543,7 +596,7 @@ const CreateInvoice = ({ existingInvoice, onSave }) => {
               <Button
                 type="submit"
                 isLoading={loading || isGeneratingNumber}
-                className="px-8 py-3 text-lg"
+                className="w-full sm:w-auto px-8 py-3"
               >
                 {existingInvoice ? "Update Invoice" : "Create Invoice"}
               </Button>

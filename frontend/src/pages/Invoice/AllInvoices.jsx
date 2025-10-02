@@ -152,15 +152,20 @@ const AllInvoices = () => {
             Manage, track, and send all your invoices.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <Button
             variant="secondary"
             onClick={() => setIsAiModalOpen(true)}
             icon={Sparkles}
+            className="w-1/2 sm:w-auto"
           >
             Create with AI
           </Button>
-          <Button onClick={() => navigate("/invoice/new")} icon={Plus}>
+          <Button
+            onClick={() => navigate("/invoice/new")}
+            icon={Plus}
+            className="w-1/2 sm:w-auto"
+          >
             New Invoice
           </Button>
         </div>
@@ -207,7 +212,7 @@ const AllInvoices = () => {
           </select>
         </div>
 
-        {/* Table Container */}
+        {/* Invoices List / Table */}
         <div className="overflow-x-auto">
           {filteredInvoices.length === 0 ? (
             <div className="text-center py-16 px-4">
@@ -229,51 +234,129 @@ const AllInvoices = () => {
               )}
             </div>
           ) : (
-            <table className="w-full min-w-max">
-              <thead className="bg-slate-50 border-b border-slate-200">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Invoice #
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Client
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Amount
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Due Date
-                  </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-slate-200">
-                {filteredInvoices.map((invoice) => (
-                  <tr
-                    key={invoice._id}
-                    className="hover:bg-slate-50 transition-colors duration-150"
-                  >
-                    <td
-                      className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600 hover:underline cursor-pointer"
-                      onClick={() => navigate(`/invoice/${invoice._id}`)}
+            <div>
+              {/* Desktop Table View */}
+              <table className="w-full min-w-max hidden md:table">
+                <thead className="bg-slate-50 border-b border-slate-200">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      Invoice #
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      Client
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      Amount
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      Due Date
+                    </th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-slate-200">
+                  {filteredInvoices.map((invoice) => (
+                    <tr
+                      key={invoice._id}
+                      className="hover:bg-slate-50 transition-colors duration-150"
                     >
-                      {invoice.invoiceNumber}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
-                      {invoice.billTo.clientName}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-800 font-semibold">
-                      ₹{invoice.total.toFixed(2)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                      {moment(invoice.dueDate).format("MMM DD, YYYY")}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      <td
+                        className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600 hover:underline cursor-pointer"
+                        onClick={() => navigate(`/invoice/${invoice._id}`)}
+                      >
+                        {invoice.invoiceNumber}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
+                        {invoice.billTo.clientName}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-800 font-semibold">
+                        ₹{invoice.total.toFixed(2)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                        {moment(invoice.dueDate).format("MMM DD, YYYY")}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-center">
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            invoice.status === "Paid"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {invoice.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div className="flex items-center justify-end gap-2">
+                          <Button
+                            size="small"
+                            variant="secondary"
+                            onClick={() => handleStatusChange(invoice)}
+                            isLoading={statusChangeLoading === invoice._id}
+                            disabled={statusChangeLoading === invoice._id}
+                          >
+                            {invoice.status === "Paid"
+                              ? "Mark as Unpaid"
+                              : "Mark as Paid"}
+                          </Button>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            title="Edit Invoice"
+                            onClick={() => navigate(`/invoice/${invoice._id}`)}
+                          >
+                            <Edit className="h-4 w-4 text-slate-500" />
+                          </Button>
+                          {invoice.status !== "Paid" && (
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              title="Send Reminder"
+                              onClick={() =>
+                                handleOpenRemainderModal(invoice._id)
+                              }
+                            >
+                              <Mail className="w-4 h-4 text-blue-500" />
+                            </Button>
+                          )}
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            title="Delete Invoice"
+                            onClick={() => handleDelete(invoice._id)}
+                            isLoading={deletingId === invoice._id}
+                            disabled={deletingId === invoice._id}
+                          >
+                            <Trash2 className="h-4 w-4 text-red-500" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden divide-y divide-slate-200">
+                {filteredInvoices.map((invoice) => (
+                  <div key={invoice._id} className="p-4">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p
+                          className="font-semibold text-blue-600 cursor-pointer"
+                          onClick={() => navigate(`/invoice/${invoice._id}`)}
+                        >
+                          {invoice.invoiceNumber}
+                        </p>
+                        <p className="text-sm text-slate-600">
+                          {invoice.billTo.clientName}
+                        </p>
+                      </div>
                       <span
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           invoice.status === "Paid"
@@ -283,20 +366,17 @@ const AllInvoices = () => {
                       >
                         {invoice.status}
                       </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex items-center justify-end gap-2">
-                        <Button
-                          size="small"
-                          variant="secondary"
-                          onClick={() => handleStatusChange(invoice)}
-                          isLoading={statusChangeLoading === invoice._id}
-                          disabled={statusChangeLoading === invoice._id}
-                        >
-                          {invoice.status === "Paid"
-                            ? "Mark as Unpaid"
-                            : "Mark as Paid"}
-                        </Button>
+                    </div>
+                    <div className="flex justify-between items-center mt-4">
+                      <div>
+                        <p className="text-sm font-bold text-slate-800">
+                          ₹{invoice.total.toFixed(2)}
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          Due: {moment(invoice.dueDate).format("MMM DD, YYYY")}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1">
                         <Button
                           size="icon"
                           variant="ghost"
@@ -328,11 +408,23 @@ const AllInvoices = () => {
                           <Trash2 className="h-4 w-4 text-red-500" />
                         </Button>
                       </div>
-                    </td>
-                  </tr>
+                    </div>
+                    <Button
+                      size="small"
+                      variant="secondary"
+                      onClick={() => handleStatusChange(invoice)}
+                      isLoading={statusChangeLoading === invoice._id}
+                      disabled={statusChangeLoading === invoice._id}
+                      className="w-full mt-4"
+                    >
+                      {invoice.status === "Paid"
+                        ? "Mark as Unpaid"
+                        : "Mark as Paid"}
+                    </Button>
+                  </div>
                 ))}
-              </tbody>
-            </table>
+              </div>
+            </div>
           )}
         </div>
       </div>

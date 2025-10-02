@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPaths";
-import { Loader2, FileText, DollarSign, Plus } from "lucide-react";
+import { Loader2, FileText, DollarSign, Plus, IndianRupee } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import AIInsightsCard from "../../components/AIInsightsCard";
@@ -53,6 +53,14 @@ const Dashboard = () => {
     fetchDashboardData();
   }, []);
 
+  // Function to format currency in Indian format (INR)
+  const formatCurrencyINR = (amount) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+    }).format(amount);
+  };
+
   const statsData = [
     {
       icon: FileText,
@@ -61,15 +69,15 @@ const Dashboard = () => {
       color: "blue",
     },
     {
-      icon: DollarSign,
+      icon: IndianRupee,
       title: "Total Paid",
-      value: stats.totalPaid.toFixed(2),
+      value: formatCurrencyINR(stats.totalPaid),
       color: "emerald",
     },
     {
-      icon: DollarSign,
+      icon: IndianRupee,
       title: "Total Unpaid",
-      value: stats.totalUnpaid.toFixed(2),
+      value: formatCurrencyINR(stats.totalUnpaid),
       color: "red",
     },
   ];
@@ -174,7 +182,7 @@ const Dashboard = () => {
                         </div>
                       </td>
                       <td className="px-4 py-3 text-sm text-slate-700">
-                        ${invoice.total.toFixed(2)}
+                        {formatCurrencyINR(invoice.total)}
                       </td>
                       <td className="px-4 py-3">
                         <span

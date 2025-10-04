@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPaths";
-import { Loader2, FileText, DollarSign, Plus, IndianRupee } from "lucide-react";
+import { Loader2, FileText, IndianRupee, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import AIInsightsCard from "../../components/AIInsightsCard";
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -42,7 +41,7 @@ const Dashboard = () => {
         setRecentInvoices(
           invoices
             .sort((a, b) => new Date(b.invoiceDate) - new Date(a.invoiceDate))
-            .slice(0, 5) // show only recent 5 invoices if needed
+            .slice(0, 5)
         );
       } catch (error) {
         console.error(error);
@@ -53,7 +52,6 @@ const Dashboard = () => {
     fetchDashboardData();
   }, []);
 
-  // Function to format currency in Indian format (INR)
   const formatCurrencyINR = (amount) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -97,7 +95,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 md:p-6">
       <div className="flex flex-col gap-1">
         <h2 className="text-2xl font-semibold tracking-tight">Dashboard</h2>
         <p className="text-sm text-slate-600">
@@ -105,7 +103,7 @@ const Dashboard = () => {
         </p>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
           {statsData.map((item, index) => (
             <div
               key={index}
@@ -130,11 +128,8 @@ const Dashboard = () => {
           ))}
         </div>
 
-        {/* AI Insights Section */}
-        {/* <AIInsightsCard /> */}
-
         {/* Recent Invoices */}
-        <div className="w-full bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
+        <div className="w-full bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden mt-6">
           <div className="flex items-center justify-between p-4 border-b border-slate-200">
             <h3 className="text-base font-semibold text-slate-800">
               Recent Invoices
@@ -150,7 +145,7 @@ const Dashboard = () => {
           {recentInvoices.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-slate-200">
-                <thead className="bg-slate-50">
+                <thead className="bg-slate-50 hidden md:table-header-group">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-slate-600">
                       Client
@@ -170,35 +165,73 @@ const Dashboard = () => {
                   {recentInvoices.map((invoice) => (
                     <tr
                       key={invoice._id}
-                      className="hover:bg-slate-50 cursor-pointer"
+                      className="block md:table-row hover:bg-slate-50 cursor-pointer"
                       onClick={() => navigate(`/invoice/${invoice._id}`)}
                     >
-                      <td className="px-4 py-3">
-                        <div className="text-sm font-medium text-slate-800">
-                          {invoice.billTo.clientName}
+                      <td
+                        className="block md:table-cell px-4 py-3"
+                        data-label="Client"
+                      >
+                        <div className="flex items-center justify-between md:justify-start">
+                          <span className="text-xs font-medium uppercase tracking-wide text-slate-600 md:hidden mr-2">
+                            Client
+                          </span>
+                          <div>
+                            <div className="text-sm font-medium text-slate-800">
+                              {invoice.billTo.clientName}
+                            </div>
+                            <div className="text-xs text-slate-500">
+                              #{invoice.invoiceNumber}
+                            </div>
+                          </div>
                         </div>
-                        <div className="text-xs text-slate-500">
-                          #{invoice.invoiceNumber}
+                      </td>
+                      <td
+                        className="block md:table-cell px-4 py-3"
+                        data-label="Amount"
+                      >
+                        <div className="flex items-center justify-between md:justify-start">
+                          <span className="text-xs font-medium uppercase tracking-wide text-slate-600 md:hidden mr-2">
+                            Amount
+                          </span>
+                          <span className="text-sm text-slate-700">
+                            {formatCurrencyINR(invoice.total)}
+                          </span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-sm text-slate-700">
-                        {formatCurrencyINR(invoice.total)}
+                      <td
+                        className="block md:table-cell px-4 py-3"
+                        data-label="Status"
+                      >
+                        <div className="flex items-center justify-between md:justify-start">
+                          <span className="text-xs font-medium uppercase tracking-wide text-slate-600 md:hidden mr-2">
+                            Status
+                          </span>
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              invoice.status === "Paid"
+                                ? "bg-emerald-100 text-emerald-800"
+                                : invoice.status === "Pending"
+                                ? "bg-amber-100 text-amber-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
+                          >
+                            {invoice.status}
+                          </span>
+                        </div>
                       </td>
-                      <td className="px-4 py-3">
-                        <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            invoice.status === "Paid"
-                              ? "bg-emerald-100 text-emerald-800"
-                              : invoice.status === "Pending"
-                              ? "bg-amber-100 text-amber-800"
-                              : "bg-red-100 text-red-800"
-                          }`}
-                        >
-                          {invoice.status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-sm text-slate-700">
-                        {moment(invoice.dueDate).format("MMM D, YYYY")}
+                      <td
+                        className="block md:table-cell px-4 py-3"
+                        data-label="Due Date"
+                      >
+                        <div className="flex items-center justify-between md:justify-start">
+                          <span className="text-xs font-medium uppercase tracking-wide text-slate-600 md:hidden mr-2">
+                            Due Date
+                          </span>
+                          <span className="text-sm text-slate-700">
+                            {moment(invoice.dueDate).format("MMM D, YYYY")}
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -217,8 +250,8 @@ const Dashboard = () => {
                 Start creating invoices now.
               </p>
               <button
-                className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                onClick={() => navigate("/invoices/new")}
+                className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white cursor-pointer hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                onClick={() => navigate("/invoice/new")}
               >
                 <Plus className="w-4 h-4" />
                 Create Invoice

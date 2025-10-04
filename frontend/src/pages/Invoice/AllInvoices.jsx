@@ -225,7 +225,7 @@ const AllInvoices = () => {
               </p>
               {invoices.length === 0 && (
                 <Button
-                  onClick={() => navigate("/invoices/new")}
+                  onClick={() => navigate("/invoice/new")}
                   className="mt-4"
                   icon={Plus}
                 >

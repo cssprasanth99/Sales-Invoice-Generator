@@ -149,8 +149,8 @@ const Signup = () => {
 
       if (response.status === 201) {
         setSuccess("Account created successfully!");
-        const { token } = response.data;
-        login(response.data, token);
+        const { token, user } = response.data;
+        login(user, token);
 
         setTimeout(() => {
           navigate("/dashboard");

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { API_PATHS } from "../../utils/apiPaths";
 import toast from "react-hot-toast";
@@ -11,11 +11,10 @@ import CreateInvoice from "./CreateInvoice";
 const InvoiceDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [invoice, setInvoice] = useState();
+  const [invoice, setInvoice] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [isRemainderModalOpen, setIsRemainderModalOpen] = useState(false);
-  const invoiceRef = useRef();
 
   useEffect(() => {
     const fetchInvoice = async () => {
@@ -33,7 +32,9 @@ const InvoiceDetail = () => {
       }
     };
 
-    fetchInvoice();
+    if (id) {
+      fetchInvoice();
+    }
   }, [id]);
 
   const handleUpdate = async (formData) => {
@@ -82,8 +83,16 @@ const InvoiceDetail = () => {
     return <CreateInvoice existingInvoice={invoice} onSave={handleUpdate} />;
   }
 
+  const formatCurrencyINR = (amount) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      minimumFractionDigits: 2,
+    }).format(amount);
+  };
+
   return (
-    <>
+    <div className="p-4 md:p-6">
       <RemainderModal
         isOpen={isRemainderModalOpen}
         onClose={() => setIsRemainderModalOpen(false)}
@@ -91,21 +100,35 @@ const InvoiceDetail = () => {
       />
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-        <h1 className="text-2xl font-bold">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 className="text-2xl font-bold text-slate-800">
           Invoice{" "}
-          <span className="text-gray-500">#{invoice.invoiceNumber}</span>
+          <span className="text-gray-500 font-medium">
+            #{invoice.invoiceNumber}
+          </span>
         </h1>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           {invoice.status !== "Paid" && (
-            <Button onClick={() => setIsRemainderModalOpen(true)} icon={Mail}>
+            <Button
+              className="w-full sm:w-auto"
+              onClick={() => setIsRemainderModalOpen(true)}
+              icon={Mail}
+            >
               Send Reminder
             </Button>
           )}
-          <Button onClick={() => setIsEditing(true)} icon={Edit}>
+          <Button
+            className="w-full sm:w-auto"
+            onClick={() => setIsEditing(true)}
+            icon={Edit}
+          >
             Edit
           </Button>
-          <Button onClick={handlePrint} icon={Printer}>
+          <Button
+            className="w-full sm:w-auto"
+            onClick={handlePrint}
+            icon={Printer}
+          >
             Print / Download
           </Button>
         </div>
@@ -114,16 +137,16 @@ const InvoiceDetail = () => {
       {/* Invoice Content */}
       <div
         id="invoice-content-wrapper"
-        className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 sm:p-8"
+        className="bg-white rounded-lg shadow-sm border border-slate-200 p-4 sm:p-6 md:p-8"
       >
         {/* Invoice Header */}
-        <div className="flex justify-between items-start border-b pb-4 mb-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start border-b pb-4 mb-4 gap-4">
           <div>
-            <h2 className="text-xl font-semibold">Invoice</h2>
+            <h2 className="text-xl font-semibold text-slate-900">Invoice</h2>
             <p className="text-gray-500">#{invoice.invoiceNumber}</p>
           </div>
-          <div className="text-right">
-            <p className="text-sm font-medium text-gray-600">Status</p>
+          <div className="text-left sm:text-right">
+            <p className="text-sm font-medium text-gray-600 mb-1">Status</p>
             <span
               className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
                 invoice.status === "Paid"
@@ -139,19 +162,19 @@ const InvoiceDetail = () => {
         </div>
 
         {/* Bill From / Bill To */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-          <div>
-            <h3 className="text-sm font-semibold mb-2">Bill From</h3>
-            <p className="text-gray-700 font-medium">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="text-sm">
+            <h3 className="font-semibold mb-2 text-slate-600">Bill From</h3>
+            <p className="text-gray-800 font-medium">
               {invoice.billFrom.businessName}
             </p>
             <p className="text-gray-600">{invoice.billFrom.address}</p>
             <p className="text-gray-600">{invoice.billFrom.email}</p>
             <p className="text-gray-600">{invoice.billFrom.phone}</p>
           </div>
-          <div>
-            <h3 className="text-sm font-semibold mb-2">Bill To</h3>
-            <p className="text-gray-700 font-medium">
+          <div className="text-sm">
+            <h3 className="font-semibold mb-2 text-slate-600">Bill To</h3>
+            <p className="text-gray-800 font-medium">
               {invoice.billTo.clientName}
             </p>
             <p className="text-gray-600">{invoice.billTo.address}</p>
@@ -160,49 +183,86 @@ const InvoiceDetail = () => {
           </div>
         </div>
 
-        {/* Dates */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+        {/* Dates & Payment Terms */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 text-sm">
           <div>
-            <h3 className="text-sm font-semibold">Invoice Date</h3>
-            <p className="text-gray-700">
+            <h3 className="font-semibold text-slate-600">Invoice Date</h3>
+            <p className="text-gray-700 mt-1">
               {new Date(invoice.invoiceDate).toLocaleDateString()}
             </p>
           </div>
           <div>
-            <h3 className="text-sm font-semibold">Due Date</h3>
-            <p className="text-gray-700">
+            <h3 className="font-semibold text-slate-600">Due Date</h3>
+            <p className="text-gray-700 mt-1">
               {new Date(invoice.dueDate).toLocaleDateString()}
             </p>
           </div>
+          <div>
+            <h3 className="font-semibold text-slate-600">Payment Terms</h3>
+            <p className="text-gray-700 mt-1">{invoice.paymentTerms}</p>
+          </div>
         </div>
 
-        {/* Payment Terms */}
-        <div className="mb-6">
-          <h3 className="text-sm font-semibold">Payment Terms</h3>
-          <p className="text-gray-700">{invoice.paymentTerms}</p>
+        {/* Items Table - Mobile: Card view, Desktop: Table view */}
+        <div className="md:hidden">
+          {invoice.items.map((item, idx) => (
+            <div
+              key={idx}
+              className="border border-slate-200 rounded-lg p-4 mb-3"
+            >
+              <p className="font-semibold text-slate-800 mb-2">{item.name}</p>
+              <div className="flex justify-between text-sm text-slate-600">
+                <span>Quantity</span>
+                <span>{item.quantity}</span>
+              </div>
+              <div className="flex justify-between text-sm text-slate-600">
+                <span>Unit Price</span>
+                <span>{formatCurrencyINR(item.unitPrice)}</span>
+              </div>
+              <div className="flex justify-between text-sm text-slate-600">
+                <span>Tax</span>
+                <span>{item.taxPercentage}%</span>
+              </div>
+              <div className="flex justify-between text-sm font-semibold text-slate-800 mt-2 pt-2 border-t">
+                <span>Total</span>
+                <span>{formatCurrencyINR(item.total)}</span>
+              </div>
+            </div>
+          ))}
         </div>
 
-        {/* Items Table */}
-        <div className="overflow-x-auto mb-6">
+        <div className="hidden md:block overflow-x-auto mb-6">
           <table className="w-full text-sm border border-slate-200 rounded-lg overflow-hidden">
-            <thead className="bg-slate-100 text-left">
+            <thead className="bg-slate-50 text-left">
               <tr>
-                <th className="px-4 py-2">Item</th>
-                <th className="px-4 py-2">Quantity</th>
-                <th className="px-4 py-2">Unit Price</th>
-                <th className="px-4 py-2">Tax (%)</th>
-                <th className="px-4 py-2">Total</th>
+                <th className="px-4 py-2 font-medium text-slate-600">Item</th>
+                <th className="px-4 py-2 font-medium text-slate-600 text-center">
+                  Quantity
+                </th>
+                <th className="px-4 py-2 font-medium text-slate-600 text-right">
+                  Unit Price
+                </th>
+                <th className="px-4 py-2 font-medium text-slate-600 text-center">
+                  Tax (%)
+                </th>
+                <th className="px-4 py-2 font-medium text-slate-600 text-right">
+                  Total
+                </th>
               </tr>
             </thead>
             <tbody>
               {invoice.items.map((item, idx) => (
                 <tr key={idx} className="border-t hover:bg-slate-50 transition">
                   <td className="px-4 py-2">{item.name}</td>
-                  <td className="px-4 py-2">{item.quantity}</td>
-                  <td className="px-4 py-2">₹{item.unitPrice.toFixed(2)}</td>
-                  <td className="px-4 py-2">{item.taxPercentage}%</td>
-                  <td className="px-4 py-2 font-medium">
-                    ₹{item.total.toFixed(2)}
+                  <td className="px-4 py-2 text-center">{item.quantity}</td>
+                  <td className="px-4 py-2 text-right">
+                    {formatCurrencyINR(item.unitPrice)}
+                  </td>
+                  <td className="px-4 py-2 text-center">
+                    {item.taxPercentage}%
+                  </td>
+                  <td className="px-4 py-2 font-medium text-right">
+                    {formatCurrencyINR(item.total)}
                   </td>
                 </tr>
               ))}
@@ -211,28 +271,36 @@ const InvoiceDetail = () => {
         </div>
 
         {/* Totals */}
-        <div className="flex flex-col items-end gap-2 mb-6">
-          <div className="flex justify-between w-64">
-            <span className="text-gray-600">Subtotal</span>
-            <span className="font-medium">₹{invoice.subtotal.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between w-64">
-            <span className="text-gray-600">Tax Total</span>
-            <span className="font-medium">₹{invoice.taxTotal.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between w-64 border-t pt-2">
-            <span className="text-gray-900 font-semibold">Total</span>
-            <span className="text-lg font-bold text-blue-600">
-              ₹{invoice.total.toFixed(2)}
-            </span>
+        <div className="flex flex-col items-center sm:items-end gap-2 mt-6">
+          <div className="w-full max-w-xs space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-gray-600">Subtotal</span>
+              <span className="font-medium">
+                {formatCurrencyINR(invoice.subtotal)}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Tax Total</span>
+              <span className="font-medium">
+                {formatCurrencyINR(invoice.taxTotal)}
+              </span>
+            </div>
+            <div className="flex justify-between border-t border-slate-300 pt-2 mt-2">
+              <span className="text-gray-900 font-semibold">Total</span>
+              <span className="text-lg font-bold text-blue-600">
+                {formatCurrencyINR(invoice.total)}
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Notes */}
         {invoice.notes && (
-          <div className="mt-6">
+          <div className="mt-8 pt-4 border-t">
             <h3 className="text-sm font-semibold mb-1">Notes</h3>
-            <p className="text-gray-700 whitespace-pre-line">{invoice.notes}</p>
+            <p className="text-sm text-gray-700 whitespace-pre-line">
+              {invoice.notes}
+            </p>
           </div>
         )}
       </div>
@@ -251,11 +319,13 @@ const InvoiceDetail = () => {
               left: 0;
               top: 0;
               width: 100%;
+              border: none;
+              box-shadow: none;
             }
           }
         `}
       </style>
-    </>
+    </div>
   );
 };
 
